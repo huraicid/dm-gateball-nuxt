@@ -16,7 +16,6 @@ const { data } = await useFetch('/api/results')
 
 <style scoped>
 .page-container {
-  max-width: 960px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }

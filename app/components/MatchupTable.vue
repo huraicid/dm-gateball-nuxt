@@ -24,6 +24,34 @@ function formatCell(result: MatchResult | null): { rate: string, detail: string 
   return { rate: `${rate}%`, detail: `(${result.wins}/${total})` }
 }
 
+function isFullWidth(ch: string): boolean {
+  const code = ch.charCodeAt(0)
+  return code > 0x7e
+}
+
+function wrapText(text: string, maxWidth = 8): string[] {
+  const lines: string[] = []
+  let line = ''
+  let width = 0
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]
+    const w = isFullWidth(ch) ? 1 : 0.5
+
+    if (width + w > maxWidth && line.length > 0) {
+      lines.push(line)
+      line = ''
+      width = 0
+    }
+
+    line += ch
+    width += w
+  }
+
+  if (line) lines.push(line)
+  return lines
+}
+
 function cellClass(result: MatchResult | null): string {
   const rate = getWinRate(result)
   if (rate === null) return 'cell-neutral'
@@ -40,13 +68,19 @@ function cellClass(result: MatchResult | null): string {
         <tr>
           <th class="corner-cell"></th>
           <th v-for="deck in props.decks" :key="deck" class="header-cell">
-            {{ deck }}
+            <template v-for="(line, idx) in wrapText(deck)" :key="idx">
+              <br v-if="idx > 0">{{ line }}
+            </template>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(row, i) in props.results" :key="props.decks[i]">
-          <th class="row-header">{{ props.decks[i] }}</th>
+          <th class="row-header">
+            <template v-for="(line, idx) in wrapText(props.decks[i])" :key="idx">
+              <br v-if="idx > 0">{{ line }}
+            </template>
+          </th>
           <td
             v-for="(cell, j) in row"
             :key="j"
@@ -81,23 +115,30 @@ function cellClass(result: MatchResult | null): string {
   padding: 0.5rem 0.75rem;
   text-align: center;
   white-space: nowrap;
+  max-width: 100px;
 }
 
 .corner-cell {
   background: #f9fafb;
+  position: sticky;
+  left: 0;
+  z-index: 2;
 }
 
 .header-cell {
   background: #f3f4f6;
   font-weight: 600;
-  min-width: 120px;
+  font-size: 0.75rem;
 }
 
 .row-header {
   background: #f3f4f6;
   font-weight: 600;
   text-align: left;
-  min-width: 120px;
+  font-size: 0.75rem;
+  position: sticky;
+  left: 0;
+  z-index: 1;
 }
 
 .cell-favorable {
