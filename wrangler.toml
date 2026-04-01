@@ -1,8 +1,2 @@
 name = "dm-gateball-nuxt"
 compatibility_date = "2025-07-15"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "dm-gateball-db"
-database_id = "0819eda5-1aa5-4802-8dd9-25a0ab4e6738"
-migrations_dir = "migrations"
