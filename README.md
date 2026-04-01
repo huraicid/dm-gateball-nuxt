@@ -10,7 +10,7 @@ Make sure to install dependencies:
 # npm
 npm install
 
-# pnpmwww
+# pnpm
 pnpm install
 
 # yarn
