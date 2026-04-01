@@ -4,7 +4,7 @@ const { data } = await useFetch('/api/results')
 
 <template>
   <div class="page-container">
-    <h1>デッキ相性 勝敗表</h1>
+    <h1>DM構築済みデッキ相性 勝敗表</h1>
     <p class="description">行のデッキから見た、列のデッキに対する勝率です。</p>
     <MatchupTable
       v-if="data"
