@@ -5,5 +5,5 @@ pages_build_output_dir = ".output/public"
 [[d1_databases]]
 binding = "DB"
 database_name = "dm-gateball-db"
-database_id = "<YOUR_DATABASE_ID>"
+database_id = "0819eda5-1aa5-4802-8dd9-25a0ab4e6738"
 migrations_dir = "migrations"

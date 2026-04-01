@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   const db = event.context.cloudflare.env.DB
 
-  const { results: decks } = await db.prepare('SELECT id, name FROM decks ORDER BY id').all<{ id: number, name: string }>()
+  const { results: decks } = await db.prepare('SELECT id, name FROM decks ORDER BY id').all<{ id: string, name: string }>()
 
   const { results: rows } = await db.prepare(`
     SELECT
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
       OR (m.deck1_id = d2.id AND m.deck2_id = d1.id)
     WHERE d1.id != d2.id
     GROUP BY d1.id, d2.id
-  `).all<{ deck_id: number, opponent_id: number, wins: number, losses: number }>()
+  `).all<{ deck_id: string, opponent_id: string, wins: number, losses: number }>()
 
   // マトリクス形式に変換
   const deckIds = decks.map(d => d.id)
