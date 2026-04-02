@@ -1,4 +1,42 @@
 <script setup lang="ts">
+// --- 認証状態 ---
+const isLoggedIn = ref<boolean | null>(null)
+const loginUsername = ref('')
+const loginPassword = ref('')
+const loginError = ref('')
+const loginLoading = ref(false)
+
+async function checkAuth() {
+  try {
+    await $fetch('/api/auth/check')
+    isLoggedIn.value = true
+  }
+  catch {
+    isLoggedIn.value = false
+  }
+}
+
+async function login() {
+  loginLoading.value = true
+  loginError.value = ''
+  try {
+    await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: { username: loginUsername.value, password: loginPassword.value },
+    })
+    isLoggedIn.value = true
+  }
+  catch (e: any) {
+    loginError.value = e?.data?.message ?? 'ログインに失敗しました'
+  }
+  finally {
+    loginLoading.value = false
+  }
+}
+
+await checkAuth()
+
+// --- 成績登録 ---
 const { data: decks } = await useFetch('/api/decks')
 
 const deck1Id = ref('')
@@ -44,76 +82,96 @@ async function submit() {
 
 <template>
   <div class="page">
-    <h1>成績登録</h1>
+    <!-- ログインフォーム -->
+    <template v-if="isLoggedIn === false">
+      <h1>ログイン</h1>
+      <form class="form" @submit.prevent="login">
+        <label class="field">
+          <span class="label">ID</span>
+          <input v-model="loginUsername" class="input" type="text" autocomplete="username" required>
+        </label>
+        <label class="field">
+          <span class="label">パスワード</span>
+          <input v-model="loginPassword" class="input" type="password" autocomplete="current-password" required>
+        </label>
+        <p v-if="loginError" class="error">{{ loginError }}</p>
+        <button class="submit-btn" :disabled="loginLoading" type="submit">
+          {{ loginLoading ? '...' : 'ログイン' }}
+        </button>
+      </form>
+    </template>
 
-    <div v-if="successCount > 0" class="success-banner">
-      登録しました（{{ successCount }}件）
-    </div>
-
-    <div class="form">
-      <label class="field">
-        <span class="label">デッキ1</span>
-        <select v-model="deck1Id" class="select">
-          <option value="">選択してください</option>
-          <option
-            v-for="d in decks"
-            :key="d.id"
-            :value="d.id"
-            :disabled="d.id === deck2Id"
-          >
-            {{ d.name }}
-          </option>
-        </select>
-      </label>
-
-      <label class="field">
-        <span class="label">デッキ2</span>
-        <select v-model="deck2Id" class="select">
-          <option value="">選択してください</option>
-          <option
-            v-for="d in decks"
-            :key="d.id"
-            :value="d.id"
-            :disabled="d.id === deck1Id"
-          >
-            {{ d.name }}
-          </option>
-        </select>
-      </label>
-
-      <div v-if="deck1Id && deck2Id && deck1Id !== deck2Id" class="field">
-        <span class="label">勝者</span>
-        <div class="winner-buttons">
-          <button
-            class="winner-btn"
-            :class="{ selected: winnerId === deck1Id }"
-            type="button"
-            @click="winnerId = deck1Id"
-          >
-            {{ deck1?.name }}
-          </button>
-          <button
-            class="winner-btn"
-            :class="{ selected: winnerId === deck2Id }"
-            type="button"
-            @click="winnerId = deck2Id"
-          >
-            {{ deck2?.name }}
-          </button>
-        </div>
+    <!-- 成績登録フォーム -->
+    <template v-else-if="isLoggedIn === true">
+      <h1>成績登録</h1>
+      <div v-if="successCount > 0" class="success-banner">
+        登録しました（{{ successCount }}件）
       </div>
+      <div class="form">
+        <label class="field">
+          <span class="label">デッキ1</span>
+          <select v-model="deck1Id" class="select">
+            <option value="">選択してください</option>
+            <option
+              v-for="d in decks"
+              :key="d.id"
+              :value="d.id"
+              :disabled="d.id === deck2Id"
+            >
+              {{ d.name }}
+            </option>
+          </select>
+        </label>
 
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+        <label class="field">
+          <span class="label">デッキ2</span>
+          <select v-model="deck2Id" class="select">
+            <option value="">選択してください</option>
+            <option
+              v-for="d in decks"
+              :key="d.id"
+              :value="d.id"
+              :disabled="d.id === deck1Id"
+            >
+              {{ d.name }}
+            </option>
+          </select>
+        </label>
 
-      <button
-        class="submit-btn"
-        :disabled="!canSubmit || submitting"
-        type="button"
-        @click="submit"
-      >
-        {{ submitting ? '登録中...' : '登録する' }}
-      </button>
-    </div>
+        <div v-if="deck1Id && deck2Id && deck1Id !== deck2Id" class="field">
+          <span class="label">勝者</span>
+          <div class="winner-buttons">
+            <button
+              class="winner-btn"
+              :class="{ selected: winnerId === deck1Id }"
+              type="button"
+              @click="winnerId = deck1Id"
+            >
+              {{ deck1?.name }}
+            </button>
+            <button
+              class="winner-btn"
+              :class="{ selected: winnerId === deck2Id }"
+              type="button"
+              @click="winnerId = deck2Id"
+            >
+              {{ deck2?.name }}
+            </button>
+          </div>
+        </div>
+
+        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+
+        <button
+          class="submit-btn"
+          :disabled="!canSubmit || submitting"
+          type="button"
+          @click="submit"
+        >
+          {{ submitting ? '登録中...' : '登録する' }}
+        </button>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -157,6 +215,7 @@ h1 {
   color: #374151;
 }
 
+.input,
 .select {
   width: 100%;
   padding: 0.75rem;
@@ -164,7 +223,7 @@ h1 {
   border: 1px solid #d1d5db;
   border-radius: 0.5rem;
   background: #fff;
-  appearance: auto;
+  box-sizing: border-box;
 }
 
 .winner-buttons {
