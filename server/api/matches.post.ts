@@ -1,17 +1,11 @@
-import { verifyCfAccessJwt } from '../utils/cfAccess'
+import { verifySessionToken, SESSION_COOKIE } from '../utils/session'
 
 export default defineEventHandler(async (event) => {
-  const token = getCookie(event, 'CF_Authorization')
-    ?? getHeader(event, 'Cf-Access-Jwt-Assertion')
-  if (!token) {
-    throw createError({ statusCode: 401, message: 'Unauthorized' })
-  }
+  const token = getCookie(event, SESSION_COOKIE)
+  const env = event.context.cloudflare?.env ?? process.env
+  const sessionSecret = env.SESSION_SECRET
 
-  const env = event.context.cloudflare?.env ?? {}
-  try {
-    await verifyCfAccessJwt(token, env)
-  }
-  catch {
+  if (!sessionSecret || !await verifySessionToken(token, sessionSecret)) {
     throw createError({ statusCode: 401, message: 'Unauthorized' })
   }
 
