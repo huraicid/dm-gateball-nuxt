@@ -82,6 +82,7 @@
 body {
   background-color: var(--bg);
   color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
 }
 </style>
 
