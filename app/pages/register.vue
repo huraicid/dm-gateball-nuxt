@@ -189,8 +189,8 @@ h1 {
 }
 
 .success-banner {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--success-bg);
+  color: var(--success-text);
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   margin-bottom: 1.25rem;
@@ -212,7 +212,7 @@ h1 {
 .label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-secondary);
 }
 
 .input,
@@ -220,9 +220,10 @@ h1 {
   width: 100%;
   padding: 0.75rem;
   font-size: 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
-  background: #fff;
+  background: var(--input-bg);
+  color: var(--text);
   box-sizing: border-box;
 }
 
@@ -236,9 +237,10 @@ h1 {
   padding: 1rem 0.5rem;
   font-size: 0.875rem;
   font-weight: 600;
-  border: 2px solid #d1d5db;
+  border: 2px solid var(--border);
   border-radius: 0.5rem;
-  background: #fff;
+  background: var(--winner-btn-bg);
+  color: var(--text);
   cursor: pointer;
   text-align: center;
   word-break: break-all;
@@ -246,9 +248,9 @@ h1 {
 }
 
 .winner-btn.selected {
-  border-color: #2563eb;
-  background: #eff6ff;
-  color: #1d4ed8;
+  border-color: var(--winner-btn-selected-border);
+  background: var(--winner-btn-selected-bg);
+  color: var(--winner-btn-selected-text);
 }
 
 .error {
@@ -261,14 +263,14 @@ h1 {
   font-size: 1rem;
   font-weight: 700;
   color: #fff;
-  background: #2563eb;
+  background: var(--submit-btn-bg);
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
 }
 
 .submit-btn:disabled {
-  background: #9ca3af;
+  background: var(--submit-btn-disabled-bg);
   cursor: not-allowed;
 }
 </style>

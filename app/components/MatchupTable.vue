@@ -111,7 +111,7 @@ function cellClass(result: MatchResult | null): string {
 
 .matchup-table th,
 .matchup-table td {
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   padding: 0.5rem 0.75rem;
   text-align: center;
   white-space: nowrap;
@@ -119,20 +119,20 @@ function cellClass(result: MatchResult | null): string {
 }
 
 .corner-cell {
-  background: #f9fafb;
+  background: var(--bg-surface-alt);
   position: sticky;
   left: 0;
   z-index: 2;
 }
 
 .header-cell {
-  background: #f3f4f6;
+  background: var(--bg-surface);
   font-weight: 600;
   font-size: 0.75rem;
 }
 
 .row-header {
-  background: #f3f4f6;
+  background: var(--bg-surface);
   font-weight: 600;
   text-align: left;
   font-size: 0.75rem;
@@ -142,26 +142,26 @@ function cellClass(result: MatchResult | null): string {
 }
 
 .cell-favorable {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--cell-favorable-bg);
+  color: var(--cell-favorable-text);
   font-weight: 500;
 }
 
 .cell-unfavorable {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--cell-unfavorable-bg);
+  color: var(--cell-unfavorable-text);
   font-weight: 500;
 }
 
 .cell-even {
-  background: #fef9c3;
-  color: #854d0e;
+  background: var(--cell-even-bg);
+  color: var(--cell-even-text);
   font-weight: 500;
 }
 
 .cell-neutral {
-  background: #f3f4f6;
-  color: #9ca3af;
+  background: var(--cell-neutral-bg);
+  color: var(--cell-neutral-text);
 }
 
 .cell-rate {

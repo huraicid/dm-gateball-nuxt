@@ -27,7 +27,7 @@ h1 {
 }
 
 .description {
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: 1.5rem;
   font-size: 0.875rem;
 }
