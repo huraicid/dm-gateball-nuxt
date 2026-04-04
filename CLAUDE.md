@@ -83,7 +83,32 @@ npm run build
 
 # 本番 D1 にマイグレーション適用
 npm run db:migrate:remote
+
+# テスト実行
+npm test
+
+# テスト（ウォッチモード）
+npm run test:watch
 ```
+
+## テスト方針
+
+このプロジェクトは **TDD（テスト駆動開発）** を採用している。
+
+- 新しい機能や変更を加える場合は、**先にテストを書いてから実装する**
+- ソースファイルごとに対応するテストファイルを `tests/unit/` 以下に作成する
+  - `server/api/*.ts` → `tests/unit/api/*.test.ts`
+  - `server/utils/*.ts` → `tests/unit/*.test.ts`
+  - `app/components/*.vue` → `tests/unit/*.test.ts`
+  - `app/pages/*.vue` → `tests/unit/pages/*.test.ts`
+- PR を作成すると GitHub Actions が自動でテストを実行する
+
+### テスト構成
+
+- **フレームワーク**: Vitest + `@nuxt/test-utils`
+- **API ハンドラーテスト**: `tests/setup/server-globals.ts` が H3 auto-import をグローバルに提供。`vi.stubGlobal` で `getCookie` / `readBody` 等をテストごとにモック
+- **ページテスト**: `renderSuspended` + `mockNuxtImport` / `registerEndpoint` で Nuxt composable と API をモック
+- **D1 モック**: `tests/helpers/mock-db.ts` の `createMockDB(...rowSets)` を使用
 
 ## 開発時の注意点
 
