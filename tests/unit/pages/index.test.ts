@@ -9,7 +9,10 @@ mockNuxtImport('useFetch', () =>
     if (url === '/api/results') {
       return {
         data: ref({
-          decks: ['サムライ魂', 'ドラゴン炎'],
+          decks: [
+            { id: 'DMC-36', name: 'サムライ魂' },
+            { id: 'DMC-37', name: 'ドラゴン炎' },
+          ],
           results: [
             [null, { wins: 3, losses: 1 }],
             [{ wins: 1, losses: 3 }, null],

@@ -19,7 +19,10 @@ describe('GET /api/results', () => {
 
     const result = await handler(createMockEvent({ db }))
 
-    expect(result.decks).toEqual(['サムライ魂', 'ドラゴン炎'])
+    expect(result.decks).toEqual([
+      { id: 'DMC-36', name: 'サムライ魂' },
+      { id: 'DMC-37', name: 'ドラゴン炎' },
+    ])
     // サムライ魂 vs ドラゴン炎: 3勝1敗
     expect(result.results[0][1]).toEqual({ wins: 3, losses: 1 })
     // ドラゴン炎 vs サムライ魂: 1勝3敗

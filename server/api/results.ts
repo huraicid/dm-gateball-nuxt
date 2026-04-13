@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
   }
 
   return {
-    decks: decks.map(d => d.name),
+    decks: decks.map(d => ({ id: d.id, name: d.name })),
     results,
   }
 })
