@@ -1,9 +1,16 @@
 import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { mount, config } from '@vue/test-utils'
 import MatchupTable from '../../app/components/MatchupTable.vue'
-import type { MatchResult } from '../../app/components/MatchupTable.vue'
+import type { MatchResult, Deck } from '../../app/components/MatchupTable.vue'
 
-const TWO_DECKS = ['デッキA', 'デッキB']
+config.global.stubs = {
+  NuxtLink: { template: '<a :href="to"><slot /></a>', props: ['to'] },
+}
+
+const TWO_DECKS: Deck[] = [
+  { id: 'deck-a', name: 'デッキA' },
+  { id: 'deck-b', name: 'デッキB' },
+]
 
 function makeResults(cells: (MatchResult | null)[][]): (MatchResult | null)[][] {
   return cells
@@ -33,6 +40,32 @@ describe('MatchupTable', () => {
       expect(rowHeaders).toHaveLength(2)
       expect(rowHeaders[0].text()).toContain('デッキA')
       expect(rowHeaders[1].text()).toContain('デッキB')
+    })
+  })
+
+  describe('デッキリンク', () => {
+    it('列ヘッダーのデッキ名がデッキ詳細ページへのリンクになっている', () => {
+      const wrapper = mount(MatchupTable, {
+        props: {
+          decks: TWO_DECKS,
+          results: makeResults([[null, null], [null, null]]),
+        },
+      })
+      const links = wrapper.findAll('th.header-cell a')
+      expect(links[0].attributes('href')).toBe('/decks/deck-a')
+      expect(links[1].attributes('href')).toBe('/decks/deck-b')
+    })
+
+    it('行ヘッダーのデッキ名がデッキ詳細ページへのリンクになっている', () => {
+      const wrapper = mount(MatchupTable, {
+        props: {
+          decks: TWO_DECKS,
+          results: makeResults([[null, null], [null, null]]),
+        },
+      })
+      const links = wrapper.findAll('th.row-header a')
+      expect(links[0].attributes('href')).toBe('/decks/deck-a')
+      expect(links[1].attributes('href')).toBe('/decks/deck-b')
     })
   })
 

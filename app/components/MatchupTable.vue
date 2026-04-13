@@ -4,8 +4,13 @@ export interface MatchResult {
   losses: number
 }
 
+export interface Deck {
+  id: string
+  name: string
+}
+
 const props = defineProps<{
-  decks: string[]
+  decks: Deck[]
   results: (MatchResult | null)[][]
 }>()
 
@@ -67,19 +72,23 @@ function cellClass(result: MatchResult | null): string {
       <thead>
         <tr>
           <th class="corner-cell"></th>
-          <th v-for="deck in props.decks" :key="deck" class="header-cell">
-            <template v-for="(line, idx) in wrapText(deck)" :key="idx">
-              <br v-if="idx > 0">{{ line }}
-            </template>
+          <th v-for="deck in props.decks" :key="deck.id" class="header-cell">
+            <NuxtLink :to="`/decks/${deck.id}`" class="deck-link">
+              <template v-for="(line, idx) in wrapText(deck.name)" :key="idx">
+                <br v-if="idx > 0">{{ line }}
+              </template>
+            </NuxtLink>
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(row, i) in props.results" :key="props.decks[i]">
+        <tr v-for="(row, i) in props.results" :key="props.decks[i].id">
           <th class="row-header">
-            <template v-for="(line, idx) in wrapText(props.decks[i])" :key="idx">
-              <br v-if="idx > 0">{{ line }}
-            </template>
+            <NuxtLink :to="`/decks/${props.decks[i].id}`" class="deck-link">
+              <template v-for="(line, idx) in wrapText(props.decks[i].name)" :key="idx">
+                <br v-if="idx > 0">{{ line }}
+              </template>
+            </NuxtLink>
           </th>
           <td
             v-for="(cell, j) in row"
@@ -162,6 +171,15 @@ function cellClass(result: MatchResult | null): string {
 .cell-neutral {
   background: var(--cell-neutral-bg);
   color: var(--cell-neutral-text);
+}
+
+.deck-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.deck-link:hover {
+  text-decoration: underline;
 }
 
 .cell-rate {

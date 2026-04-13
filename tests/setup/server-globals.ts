@@ -6,7 +6,7 @@
  * API ハンドラーはこれらを「束縛なし参照」として使用するため、
  * globalThis に存在すれば正常に動作する。
  */
-import { defineEventHandler, getCookie, setCookie, readBody, createError } from 'h3'
+import { defineEventHandler, getCookie, setCookie, readBody, createError, getRouterParam } from 'h3'
 
 Object.assign(globalThis, {
   defineEventHandler,
@@ -14,4 +14,5 @@ Object.assign(globalThis, {
   setCookie,
   readBody,
   createError,
+  getRouterParam,
 })
