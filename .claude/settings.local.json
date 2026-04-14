@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "WebFetch(domain:dmwiki.net)",
+      "WebFetch(domain:torekakaku.com)",
+      "WebSearch",
+      "WebFetch(domain:www.climax-card.jp)",
+      "WebFetch(domain:yuyu-tei.jp)"
     ]
   }
 }
