@@ -57,4 +57,29 @@ describe('pages/index.vue', () => {
     const wrapper = await renderSuspended(IndexPage)
     expect(wrapper.html()).toContain('サムライ魂 勝利')
   })
+
+  it('勝率ランキングセクションを表示する', async () => {
+    const wrapper = await renderSuspended(IndexPage)
+    expect(wrapper.html()).toContain('勝率ランキング')
+  })
+
+  it('ランキングを勝率降順で表示する', async () => {
+    const wrapper = await renderSuspended(IndexPage)
+    const html = wrapper.html()
+    const pos36 = html.indexOf('サムライ魂')
+    const pos37 = html.indexOf('ドラゴン炎')
+    // サムライ魂(75%)がドラゴン炎(25%)より先に出現する
+    // ただし勝敗表の見出し行より後のランキング部分で比較するため
+    // ランキングセクション内の順序をチェック
+    const rankingSection = html.slice(html.indexOf('勝率ランキング'))
+    expect(rankingSection.indexOf('サムライ魂')).toBeLessThan(rankingSection.indexOf('ドラゴン炎'))
+  })
+
+  it('ランキングに勝率・勝数・敗数を表示する', async () => {
+    const wrapper = await renderSuspended(IndexPage)
+    const rankingSection = wrapper.html().slice(wrapper.html().indexOf('勝率ランキング'))
+    expect(rankingSection).toContain('75.0%')
+    expect(rankingSection).toContain('3勝')
+    expect(rankingSection).toContain('1敗')
+  })
 })

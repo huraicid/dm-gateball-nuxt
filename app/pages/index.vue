@@ -1,6 +1,32 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 const { data } = await useFetch('/api/results')
 const { data: recentMatches } = await useFetch('/api/matches')
+
+const rankings = computed(() => {
+  if (!data.value) return []
+  const { decks, results } = data.value
+  return decks.map((deck, i) => {
+    let wins = 0
+    let losses = 0
+    for (let j = 0; j < decks.length; j++) {
+      const cell = results[i][j]
+      if (cell) {
+        wins += cell.wins
+        losses += cell.losses
+      }
+    }
+    const total = wins + losses
+    const winRate = total > 0 ? (wins / total) * 100 : null
+    return { deck, wins, losses, total, winRate }
+  }).sort((a, b) => {
+    if (a.winRate === null && b.winRate === null) return 0
+    if (a.winRate === null) return 1
+    if (b.winRate === null) return -1
+    return b.winRate - a.winRate
+  })
+})
 
 function formatDate(playedAt: string): string {
   return new Date(playedAt).toLocaleDateString('ja-JP', {
@@ -20,6 +46,33 @@ function formatDate(playedAt: string): string {
       :decks="data.decks"
       :results="data.results"
     />
+
+    <section v-if="rankings.length > 0" class="ranking">
+      <h2>勝率ランキング</h2>
+      <table class="ranking-table">
+        <thead>
+          <tr>
+            <th class="rank-col">順位</th>
+            <th class="name-col">デッキ</th>
+            <th class="stat-col">勝率</th>
+            <th class="stat-col">成績</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, index) in rankings" :key="row.deck.id" :class="{ 'no-games': row.winRate === null }">
+            <td class="rank-col">{{ row.winRate !== null ? index + 1 : '-' }}</td>
+            <td class="name-col">
+              <NuxtLink :to="`/decks/${row.deck.id}`" class="deck-link">{{ row.deck.name }}</NuxtLink>
+            </td>
+            <td class="stat-col win-rate">{{ row.winRate !== null ? `${row.winRate.toFixed(1)}%` : '-' }}</td>
+            <td class="stat-col detail">
+              <span v-if="row.total > 0">{{ row.wins }}勝{{ row.losses }}敗</span>
+              <span v-else>-</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
     <section v-if="recentMatches && recentMatches.length > 0" class="recent-matches">
       <h2>直近の対戦結果</h2>
@@ -50,6 +103,65 @@ h1 {
   color: var(--text-muted);
   margin-bottom: 1.5rem;
   font-size: 0.875rem;
+}
+
+.ranking {
+  margin-top: 2.5rem;
+}
+
+.ranking h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.ranking-table {
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  min-width: 320px;
+}
+
+.ranking-table th,
+.ranking-table td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+}
+
+.ranking-table thead th {
+  background: var(--bg-surface);
+  font-weight: 600;
+  text-align: center;
+}
+
+.rank-col {
+  text-align: center;
+  width: 3rem;
+}
+
+.name-col {
+  text-align: left;
+}
+
+.stat-col {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.win-rate {
+  font-weight: 600;
+}
+
+.no-games td {
+  color: var(--text-muted);
+}
+
+.deck-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.deck-link:hover {
+  text-decoration: underline;
 }
 
 .recent-matches {
