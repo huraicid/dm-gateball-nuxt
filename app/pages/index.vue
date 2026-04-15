@@ -53,6 +53,7 @@ function formatDate(playedAt: string): string {
         <thead>
           <tr>
             <th class="rank-col">順位</th>
+            <th class="id-col">ID</th>
             <th class="name-col">デッキ</th>
             <th class="stat-col">試合数</th>
             <th class="stat-col">勝</th>
@@ -63,6 +64,7 @@ function formatDate(playedAt: string): string {
         <tbody>
           <tr v-for="(row, index) in rankings" :key="row.deck.id" :class="{ 'no-games': row.winRate === null }">
             <td class="rank-col">{{ row.winRate !== null ? index + 1 : '-' }}</td>
+            <td class="id-col">{{ row.deck.id }}</td>
             <td class="name-col">
               <NuxtLink :to="`/decks/${row.deck.id}`" class="deck-link">{{ row.deck.name }}</NuxtLink>
             </td>
@@ -137,6 +139,13 @@ h1 {
 .rank-col {
   text-align: center;
   width: 3rem;
+}
+
+.id-col {
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
 .name-col {
