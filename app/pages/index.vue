@@ -28,6 +28,13 @@ const rankings = computed(() => {
   })
 })
 
+function winRateClass(winRate: number | null): string {
+  if (winRate === null) return 'cell-neutral'
+  if (winRate >= 60) return 'cell-favorable'
+  if (winRate >= 45) return 'cell-even'
+  return 'cell-unfavorable'
+}
+
 function formatDate(playedAt: string): string {
   return new Date(playedAt).toLocaleDateString('ja-JP', {
     year: 'numeric',
@@ -71,7 +78,7 @@ function formatDate(playedAt: string): string {
             <td class="stat-col">{{ row.total > 0 ? row.total : '-' }}</td>
             <td class="stat-col">{{ row.total > 0 ? row.wins : '-' }}</td>
             <td class="stat-col">{{ row.total > 0 ? row.losses : '-' }}</td>
-            <td class="stat-col win-rate">{{ row.winRate !== null ? `${row.winRate.toFixed(1)}%` : '-' }}</td>
+            <td class="stat-col win-rate" :class="winRateClass(row.winRate)">{{ row.winRate !== null ? `${row.winRate.toFixed(1)}%` : '-' }}</td>
           </tr>
         </tbody>
       </table>
@@ -159,6 +166,26 @@ h1 {
 
 .win-rate {
   font-weight: 600;
+}
+
+.cell-favorable {
+  background: var(--cell-favorable-bg);
+  color: var(--cell-favorable-text);
+}
+
+.cell-unfavorable {
+  background: var(--cell-unfavorable-bg);
+  color: var(--cell-unfavorable-text);
+}
+
+.cell-even {
+  background: var(--cell-even-bg);
+  color: var(--cell-even-text);
+}
+
+.cell-neutral {
+  background: var(--cell-neutral-bg);
+  color: var(--cell-neutral-text);
 }
 
 .no-games td {

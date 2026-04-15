@@ -75,6 +75,18 @@ describe('pages/index.vue', () => {
     expect(rankingSection.indexOf('サムライ魂')).toBeLessThan(rankingSection.indexOf('ドラゴン炎'))
   })
 
+  it('勝率セルに勝率に応じた色クラスを付ける', async () => {
+    const wrapper = await renderSuspended(IndexPage)
+    const rankingSection = wrapper.html().slice(wrapper.html().indexOf('勝率ランキング'))
+    // サムライ魂 75% → cell-favorable
+    const rows = rankingSection.match(/<tr[\s\S]*?<\/tr>/g) ?? []
+    const favorableRow = rows.find(r => r.includes('サムライ魂')) ?? ''
+    expect(favorableRow).toContain('cell-favorable')
+    // ドラゴン炎 25% → cell-unfavorable
+    const unfavorableRow = rows.find(r => r.includes('ドラゴン炎')) ?? ''
+    expect(unfavorableRow).toContain('cell-unfavorable')
+  })
+
   it('ランキングに試合数・勝・負・勝率を表示する', async () => {
     const wrapper = await renderSuspended(IndexPage)
     const rankingSection = wrapper.html().slice(wrapper.html().indexOf('勝率ランキング'))
