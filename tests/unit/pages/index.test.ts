@@ -75,11 +75,16 @@ describe('pages/index.vue', () => {
     expect(rankingSection.indexOf('サムライ魂')).toBeLessThan(rankingSection.indexOf('ドラゴン炎'))
   })
 
-  it('ランキングに勝率・勝数・敗数を表示する', async () => {
+  it('ランキングに試合数・勝・負・勝率を表示する', async () => {
     const wrapper = await renderSuspended(IndexPage)
     const rankingSection = wrapper.html().slice(wrapper.html().indexOf('勝率ランキング'))
+    expect(rankingSection).toContain('試合数')
     expect(rankingSection).toContain('75.0%')
-    expect(rankingSection).toContain('3勝')
-    expect(rankingSection).toContain('1敗')
+    // サムライ魂: 4試合, 3勝, 1敗
+    const rows = rankingSection.match(/<tr[\s\S]*?<\/tr>/g) ?? []
+    const firstRow = rows.find(r => r.includes('サムライ魂')) ?? ''
+    expect(firstRow).toContain('>4<')
+    expect(firstRow).toContain('>3<')
+    expect(firstRow).toContain('>1<')
   })
 })

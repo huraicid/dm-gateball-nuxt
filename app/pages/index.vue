@@ -54,8 +54,10 @@ function formatDate(playedAt: string): string {
           <tr>
             <th class="rank-col">順位</th>
             <th class="name-col">デッキ</th>
+            <th class="stat-col">試合数</th>
+            <th class="stat-col">勝</th>
+            <th class="stat-col">負</th>
             <th class="stat-col">勝率</th>
-            <th class="stat-col">成績</th>
           </tr>
         </thead>
         <tbody>
@@ -64,11 +66,10 @@ function formatDate(playedAt: string): string {
             <td class="name-col">
               <NuxtLink :to="`/decks/${row.deck.id}`" class="deck-link">{{ row.deck.name }}</NuxtLink>
             </td>
+            <td class="stat-col">{{ row.total > 0 ? row.total : '-' }}</td>
+            <td class="stat-col">{{ row.total > 0 ? row.wins : '-' }}</td>
+            <td class="stat-col">{{ row.total > 0 ? row.losses : '-' }}</td>
             <td class="stat-col win-rate">{{ row.winRate !== null ? `${row.winRate.toFixed(1)}%` : '-' }}</td>
-            <td class="stat-col detail">
-              <span v-if="row.total > 0">{{ row.wins }}勝{{ row.losses }}敗</span>
-              <span v-else>-</span>
-            </td>
           </tr>
         </tbody>
       </table>
